@@ -21,10 +21,11 @@ const generateRandomNumber = (min, max, exclude) => {
 const GameScreen = props => {
     const [currentGuess, setCurrentGuess] = useState(generateRandomNumber(1, 100, props.userChoice))
     const [rounds, setRounds] = useState(0)
+    
     const currentLow = useRef(1)
     const currentHigh = useRef(100)
     
-    const { userChoice, onGameOver } = this.props
+    const { userChoice, onGameOver } = props
     
     useEffect(() => {
         if(currentGuess === userChoice) {
@@ -50,6 +51,7 @@ const GameScreen = props => {
         }
         const nextNumber = generateRandomNumber(currentLow.current, currentHigh.current, currentGuess)
         setCurrentGuess(nextNumber)
+        
         setRounds(currentRounds => currentRounds + 1)
     }
 
@@ -64,7 +66,6 @@ const GameScreen = props => {
                 <Button title='GREATER' onPress={nextGuessHandler.bind(this, 'greater')} />
 
             </Card>
-            {validate}
         </View>
     )
 }
