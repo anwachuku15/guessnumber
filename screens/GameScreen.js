@@ -20,17 +20,22 @@ const generateRandomNumber = (min, max, exclude) => {
 
 const GameScreen = props => {
     const [currentGuess, setCurrentGuess] = useState(generateRandomNumber(1, 100, props.userChoice))
+    const [rounds, setRounds] = useState(0)
     const currentLow = useRef(1)
     const currentHigh = useRef(100)
     
+    const { userChoice, onGameOver } = this.props
+    
     useEffect(() => {
-        if(currentGuess === props.userChoice) {
-            
+        if(currentGuess === userChoice) {
+            onGameOver(rounds)
         }
-    })
+    }, [currentGuess, userChoice, onGameOver])
 
     const nextGuessHandler = direction => {
-        if ((direction === 'lower' && currentGuess < props.userChoice) || (direction === 'greater' && currentGuess > props.userChoice)) {
+        if (
+            (direction === 'lower' && currentGuess < userChoice) || 
+            (direction === 'greater' && currentGuess > userChoice)) {
             Alert.alert(
                 'Don\'t lie!', 
                 'You know this is wrong...', 
@@ -45,17 +50,10 @@ const GameScreen = props => {
         }
         const nextNumber = generateRandomNumber(currentLow.current, currentHigh.current, currentGuess)
         setCurrentGuess(nextNumber)
+        setRounds(currentRounds => currentRounds + 1)
     }
 
 
-
-    const validate = () => {
-        if (currentGuess === props.userChoice) {
-            return <Card><Text>CORRECT!</Text></Card>
-        } else {
-            return
-        }
-    }
 
     return (
         <View style={styles.screen} >
