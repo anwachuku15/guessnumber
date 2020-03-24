@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Alert, ScrollView, FlatList } from 'react-native'
 
 import { Ionicons } from '@expo/vector-icons'
 
 
 import NumberContainer from '../components/NumberContainer'
 import Card from '../components/Card'
+import BodyText from '../components/BodyText'
 
 import DefaultStyles from '../constants/default-styles'
 import MainButton from '../components/MainButton'
@@ -22,6 +23,12 @@ const generateRandomNumber = (min, max, exclude) => {
     }
 }
 
+const renderListItem = (listLength, itemData) => (
+    <View key={itemData.index} style={styles.listItem}>
+        <BodyText>#{listLength - itemData.index}:</BodyText>
+        <BodyText>{itemData.item}</BodyText>
+    </View>
+)
 
 const GameScreen = props => {
     const { bodyText, title } = DefaultStyles
@@ -70,7 +77,8 @@ const GameScreen = props => {
 
 
     return (
-        <View style={styles.screen} >
+        <View style={styles.screen}>
+
             <Text style={title}>Opponent's Guess</Text>
             <NumberContainer>{currentGuess}</NumberContainer>
             <Card style={styles.buttonContainer}>
@@ -82,13 +90,18 @@ const GameScreen = props => {
                 </MainButton>
             </Card>
 
-            <ScrollView>
-                {pastGuesses.map(guess => (
-                    <View key={guess}>
-                        <Text>{guess}</Text>
-                    </View>
-                ))}
-            </ScrollView>
+            <View style={styles.listContainer}>
+                {/* <ScrollView contentContainerStyle={styles.list}>
+                    {pastGuesses.map((guess, index) => renderListItem(guess, pastGuesses.length - index))}
+                </ScrollView> */}
+                <FlatList
+                    keyExtractor={item => item}
+                    data={pastGuesses}
+                    renderItem={renderListItem.bind(this, pastGuesses.length)}
+                    contentContainerStyle={styles.list}
+                />
+            </View>
+            
         </View>
     )
 }
@@ -103,8 +116,27 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: 20,
-        width: 300,
-        maxWidth: '80%'
+        width: 400,
+        maxWidth: '90%'
+    },
+    listContainer: {
+        flex: 1,
+        width: '60%',
+    },
+    list: {
+        flexGrow: 1,
+        // alignItems: 'center', 
+        justifyContent: 'flex-start'
+    },
+    listItem: {
+        borderColor: '#ccc',
+        borderWidth: 1,
+        padding: 15,
+        marginVertical: 10,
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
     }
 })
 
